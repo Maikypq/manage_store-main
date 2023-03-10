@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>SaleService.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SaleService.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">co.edu.umanizales.manage_store.service</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">co.edu.umanizales.manage_store.controller.dto.BestSellerDTO</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">co.edu.umanizales.manage_store.controller.dto.BestStoreDTO</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">co.edu.umanizales.manage_store.model.Sale</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">co.edu.umanizales.manage_store.model.Seller</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">co.edu.umanizales.manage_store.model.Store</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">lombok.Getter</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">org.springframework.stereotype.Service</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.List</span><span class="s0">;</span>
+
+<span class="s1">@Service</span>
+<span class="s1">@Getter</span>
+<span class="s0">public class </span><span class="s1">SaleService {</span>
+    <span class="s0">private </span><span class="s1">List&lt;Sale&gt; sales</span><span class="s0">;</span>
+
+    <span class="s0">public </span><span class="s1">SaleService() {</span>
+        <span class="s0">this</span><span class="s1">.sales = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">addSale(Sale sale){</span>
+        <span class="s0">this</span><span class="s1">.sales.add(sale)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public int </span><span class="s1">getTotalSales(){</span>
+        <span class="s0">int </span><span class="s1">sum =</span><span class="s2">0</span><span class="s0">;</span>
+        <span class="s0">for</span><span class="s1">(Sale sale:sales){</span>
+            <span class="s1">sum=sum + sale.getQuantity()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">return </span><span class="s1">sum</span><span class="s0">;</span>
+    <span class="s1">}</span>
+    <span class="s3">//total de ventas del vendedor, igual para en total de ventas por sucursal</span>
+    <span class="s0">public int </span><span class="s1">getTotalSalesByseller(String codeSeller){</span>
+        <span class="s0">int </span><span class="s1">sum =</span><span class="s2">0</span><span class="s0">;</span>
+        <span class="s0">for</span><span class="s1">(Sale sale:sales){</span>
+            <span class="s0">if</span><span class="s1">(sale.getSeller().getCode().equals(codeSeller)) {</span>
+                <span class="s1">sum = sum + sale.getQuantity()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+        <span class="s0">return </span><span class="s1">sum</span><span class="s0">;</span>
+    <span class="s1">}</span>
+    <span class="s0">public int </span><span class="s1">getTotalSalesByStore(String codeStore){</span>
+        <span class="s0">int </span><span class="s1">sum=</span><span class="s2">0</span><span class="s0">;</span>
+        <span class="s0">for</span><span class="s1">(Sale sale: sales){</span>
+            <span class="s0">if</span><span class="s1">(sale.getStore().getCode().equals(codeStore)){</span>
+                <span class="s1">sum= sum+sale.getQuantity()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+        <span class="s0">return </span><span class="s1">sum</span><span class="s0">;</span>
+    <span class="s1">}</span>
+    <span class="s0">public </span><span class="s1">BestSellerDTO getBestSeller(List&lt;Seller&gt; sellers){</span>
+        <span class="s1">BestSellerDTO bestSellerDTO= </span><span class="s0">new </span><span class="s1">BestSellerDTO(</span><span class="s0">new </span><span class="s1">Seller()</span><span class="s0">,</span><span class="s2">0</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s0">for</span><span class="s1">(Seller seller: sellers){</span>
+            <span class="s0">int </span><span class="s1">quant = getTotalSalesByseller(seller.getCode())</span><span class="s0">;</span>
+            <span class="s0">if</span><span class="s1">(quant &gt;= bestSellerDTO.getQuantity()){</span>
+                <span class="s1">bestSellerDTO=</span><span class="s0">new </span><span class="s1">BestSellerDTO(seller</span><span class="s0">,</span><span class="s1">quant)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+        <span class="s0">return </span><span class="s1">bestSellerDTO</span><span class="s0">;</span>
+    <span class="s1">}</span>
+    <span class="s0">public </span><span class="s1">BestStoreDTO getBestStore(List&lt;Store&gt; stores){</span>
+        <span class="s1">BestStoreDTO bestStoreDTO=</span><span class="s0">new </span><span class="s1">BestStoreDTO(</span><span class="s0">new </span><span class="s1">Store()</span><span class="s0">,</span><span class="s2">0</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s0">for </span><span class="s1">(Store store:stores){</span>
+            <span class="s0">int </span><span class="s1">quant=getTotalSalesByStore(store.getCode())</span><span class="s0">;</span>
+            <span class="s0">if</span><span class="s1">(quant &gt;= bestStoreDTO.getQuantity()){</span>
+                <span class="s1">bestStoreDTO=</span><span class="s0">new </span><span class="s1">BestStoreDTO(store</span><span class="s0">,</span><span class="s1">quant)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+        <span class="s0">return </span><span class="s1">bestStoreDTO</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+
+<span class="s1">}</span></pre>
+</body>
+</html>
